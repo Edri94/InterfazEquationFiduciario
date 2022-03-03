@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,7 +102,7 @@ namespace Consumir_InterfazEquationFiduciario
 
                 if(this.ConectDB())
                 {
-                    String gs_sql = @"
+                     miscelaneas.gs_sql = @"
                         select 
 	                        DISTINCT contrato=convert(varchar,ag.prefijo_agencia) + cf.CUENTA_CLIENTE,
 	                        GETDATE() [fecha],
@@ -121,18 +122,45 @@ namespace Consumir_InterfazEquationFiduciario
 	                        and 
 	                        pc.producto in (8009) 
                         order by 1 desc;
-                    ";
-
-                    //SqlDataReader dr =this.bd.ejecutarConsulta(gs_sql);
-                    //DataTable dt = new DataTable();
-                    //dt.Clear();
-                    //dt.Columns.Add("contrato");
-                    //dt.Columns.Add("fecha");
-                    //dt.Columns.Add("tipo_operacion");
-
-
-                    
+                    ";  
                 }
+
+                if(File.Exists(this.rutaArchivo))
+                {
+                    Directory.CreateDirectory(this.rutaArchivo);
+                }
+
+                if (File.Exists(this.rutaArchivo + "Modelos"))
+                {
+                    Directory.CreateDirectory(this.rutaArchivo + "Modelos");
+                }
+
+                this.nombreArchivo = this.rutaArchivo + this.rutaArchivo + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy");
+                this.nombreArchivoDtt = miscelaneas.ApliPath + "\\EQFIDTKT.DTT";
+
+                this.nombreArchivoFDF = miscelaneas.ApliPath + "\\EQFIDTKTF.FDF";
+                this.nombreArchivoFDFDestino = this.rutaArchivo + "Modelos\\EQFIDTKTF.FDF";
+
+                string vData = "";
+                SqlDataReader dr = this.bd.ejecutarConsulta(miscelaneas.gs_sql);
+                
+                using (StreamWriter outputFile = new StreamWriter(this.nombreArchivo, append: true))
+                {
+                    if (dr != null)
+                    {
+                        while (dr.Read())
+                        {
+                            vData = dr.GetString(0) + "-" + dr.GetDateTime(1).ToString("ddMMyyyy") + dr.GetString(2);
+                            outputFile.WriteLine(vData);
+                        }
+                        dr.Close();
+                    }
+                   
+                }
+
+
+
+
             }
             catch (Exception ex)
             {
