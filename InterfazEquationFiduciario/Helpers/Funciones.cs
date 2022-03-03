@@ -10,22 +10,9 @@ using System.Threading.Tasks;
 
 namespace InterfazEquationFiduciario.Helpers
 {
-    public class Funciones
+    public static class Funciones
     {
-        public string strLogPath;
-        public bool EscribirLog;
-
-        public Funciones()
-        {
-            String CadenaRsultante, strPathServicio;
-            strPathServicio = System.Reflection.Assembly.GetEntryAssembly().Location;
-            CadenaRsultante = strPathServicio.Substring(strPathServicio.LastIndexOf("\\", strPathServicio.Length) + 1);
-
-            strLogPath = strPathServicio.Substring(0, strPathServicio.Length - CadenaRsultante.Length) + "Logs\\";
-            EscribirLog = true;
-        }
-
-        public string obtenParametroINI(string key, string section = "")
+        public static string getValueAppConfig(string key, string section = "")
         {
             if (section.Length >= 1)
             {
@@ -38,7 +25,7 @@ namespace InterfazEquationFiduciario.Helpers
 
         }
 
-        public bool EscribeParametroINI(string key, string value, string section = "")
+        public static bool SetParameterAppSettings(string key, string value, string section = "")
         {
             //string nombre_appconfig = "MonitorMQTKT.exe.config";
             string nombre_appconfig = "App.config";
@@ -47,7 +34,6 @@ namespace InterfazEquationFiduciario.Helpers
             try
             {
                 string appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                writeToLog("Split aplicado a:   " + appPath);
                 string[] appPath_arr = appPath.Split('\\');
 
                 appPath = "";
@@ -55,7 +41,6 @@ namespace InterfazEquationFiduciario.Helpers
                 {
                     appPath = (i > 0) ? appPath + "\\" + appPath_arr[i] : appPath + appPath_arr[i];
                     string busqueda = $"{appPath}\\{nombre_appconfig}";
-                    writeToLog("Buscando:    " + busqueda);
                     bandera_archivo_existe = File.Exists(busqueda);
                     if (bandera_archivo_existe) break;
                 }
@@ -79,79 +64,58 @@ namespace InterfazEquationFiduciario.Helpers
                 }
                 else
                 {
-                    writeToLog("No se encontro el archivo", "Error");
                     return false;
                 }
 
             }
             catch (Exception ex)
             {
-                writeToLog(ex, "Error");
                 return false;
             }
+
         }
 
-
-        public void writeToLog(string vData, string tipo = "Mensaje")
+        public static bool SetParameterTransfer(string key, string value, string archivo, string ruta_archivo)
         {
-            StackTrace trace = new StackTrace(StackTrace.METHODS_TO_SKIP + 2);
-            StackFrame frame = trace.GetFrame(0);
-            MethodBase caller = frame.GetMethod();
-
-            string clase = caller.ReflectedType.Name;
-            string funcion = caller.Name;
-            clase = "MQTKT";
-
-            string seccion = "escribeArchivoLOG";
-            string nombre_archivo = DateTime.Now.ToString("ddMMyyyy") + "-" + this.obtenParametroINI("logFileName", seccion);
-            nombre_archivo = nombre_archivo.Replace("@clase", clase);
-
-            if (EscribirLog)
+            try
             {
-                using (StreamWriter outputFile = new StreamWriter(Path.Combine(strLogPath, nombre_archivo), append: true))
+                string appPath = ruta_archivo + archivo;
+
+                if (File.Exists(appPath))
                 {
-                    vData = $"[{DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss")}]  {tipo} desde {funcion}:  {vData}";
-                    Console.WriteLine(vData);
-                    outputFile.WriteLine(vData);
+                    string buscar = $"{key}=";
+                    string remplazar = $"{key}={value}";
+                    string text = File.ReadAllText(appPath).Replace(buscar, remplazar);
+                    File.WriteAllText(appPath, text);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
 
             }
-        }
-
-
-        public void writeToLog(Exception ex, string tipo = "Error")
-        {
-            StackTrace trace = new StackTrace(StackTrace.METHODS_TO_SKIP + 2);
-            StackFrame frame = trace.GetFrame(0);
-            MethodBase caller = frame.GetMethod();
-
-            string clase = caller.ReflectedType.Name;
-            string funcion = caller.Name;
-            clase = "MQTKT";
-
-            string vData;
-            string seccion = "escribeArchivoLOG";
-            string nombre_archivo = DateTime.Now.ToString("ddMMyyyy") + "-" + this.obtenParametroINI("logFileName", seccion);
-            nombre_archivo = nombre_archivo.Replace("@clase", clase);
-
-            if (EscribirLog)
+            catch (Exception ex)
             {
-                using (StreamWriter outputFile = new StreamWriter(Path.Combine(strLogPath, nombre_archivo), append: true))
-                {
-                    vData = $"[{DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss")}] {(char)13}" +
-                        $"*{tipo} desde {funcion}:  {ex.Message} {(char)13}" +
-                        $"*InnerException: {ex.InnerException} {(char)13}" +
-                        $"*Source: {ex.Source}  {(char)13}" +
-                        $"*Data: {ex.Data}  {(char)13}" +
-                        $"*HelpLink: {ex.HelpLink}  {(char)13}" +
-                        $"*StackTrace: {ex.StackTrace}  {(char)13}" +
-                        $"*HResult: {ex.HResult}  {(char)13}" +
-                        $"*TargetSite: {ex.TargetSite}  {(char)13}";
-                    Console.Write(vData);
-                    outputFile.WriteLine(vData);
-                }
-
+                Log.Escribe(ex);
+                return false;
             }
+
         }
+
+        public static void TimeDelay(Byte segundos)
+        {
+            ////Dim lnFree  As Date
+            ////Dim lnTrash As Byte
+
+            ////lnFree = DateAdd("s", Segundos, Time)
+            ////Do While Time < lnFree
+            ////Loop
+
+
+        }
+
     }
 }
+

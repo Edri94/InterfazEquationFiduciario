@@ -14,71 +14,71 @@ namespace InterfazEquationFiduciario
         public const string Aplicacion = "BackLA";
 
 
-        private string DEFAULT_SRVR;   // Variable para almacenar el nombre del Servidor a Utilizar
+        public string DEFAULT_SRVR;   // Variable para almacenar el nombre del Servidor a Utilizar
         
-        private string DBDESARROLLO;   // Variable para almacenar el nombre de la Base de Datos de DESARROLLO
-        private string DBCATALOGOS;   // Variable para almacenar el nombre de la Base de Datos de CATALOGOS
-        private string DBFUNCS;   // Variable para almacenar el nombre de la Base de Datos de FUNCIONARIOS
-        private string DEFAULT_SRVRKYC;   // Variable para almacenar el nombre del Servidor de KYC
-        private string GPATH;   // Variable para almacenar la ruta de los Reportes del Sistema
-        private string GsPassword;   // Variable para almacenar el password de usuario SQL
-        private string GsUSer;   // Variable para almacenar el usuario de usuario SQL
-        private string GsPasswordAS400;   // Variable para almacenar el password de As400
-        private string GsUSerAS400;   // Variable para almacenar el usuario de AS400
-        private string CNNAME;   // Variable para almacenar el nombre que se le asigna a la conexion
-        private string DBDSN;   // Variable para almacenar el DSN utilizado para reportes
-        private string DEFAULT_SRVROFAC;   // Variable para almacenar el nombre del Servidor de OFAC
-        private string DBOFAC;   // Variable para almacenar el nombre de la Base de Datos de OFAC
-        private string GsPasswordOFAC;   // Variable para almacenar el password de usuario SQL de OFAC
-        private string GsUSerOFAC;   // Variable para almacenar el usuario de usuario SQL de OFAC
+        public string DBDESARROLLO;   // Variable para almacenar el nombre de la Base de Datos de DESARROLLO
+        public string DBCATALOGOS;   // Variable para almacenar el nombre de la Base de Datos de CATALOGOS
+        public string DBFUNCS;   // Variable para almacenar el nombre de la Base de Datos de FUNCIONARIOS
+        public string DEFAULT_SRVRKYC;   // Variable para almacenar el nombre del Servidor de KYC
+        public string GPATH;   // Variable para almacenar la ruta de los Reportes del Sistema
+        public string GsPassword;   // Variable para almacenar el password de usuario SQL
+        public string GsUSer;   // Variable para almacenar el usuario de usuario SQL
+        public string GsPasswordAS400;   // Variable para almacenar el password de As400
+        public string GsUSerAS400;   // Variable para almacenar el usuario de AS400
+        public string CNNAME;   // Variable para almacenar el nombre que se le asigna a la conexion
+        public string DBDSN;   // Variable para almacenar el DSN utilizado para reportes
+        public string DEFAULT_SRVROFAC;   // Variable para almacenar el nombre del Servidor de OFAC
+        public string DBOFAC;   // Variable para almacenar el nombre de la Base de Datos de OFAC
+        public string GsPasswordOFAC;   // Variable para almacenar el password de usuario SQL de OFAC
+        public string GsUSerOFAC;   // Variable para almacenar el usuario de usuario SQL de OFAC
 
-        private string ApliPath;   // Ruta donde se ejecuta la aplicacion
+        public string ApliPath;   // Ruta donde se ejecuta la aplicacion
 
-        private string gs_sql;   // Variable para sentencias en SQL
-        private int gn_LineaTel;  // Numero de linea con la que firma el usuario
-        private string gs_FechaHoy;   // Variable que guarda la fecha del sistema en formato 'mm-dd-yy'
-        private int gn_NumUnidOrg;  // Variable para gardar el numero de unidad organizacional
-        private string gs_NumCuenta;   // Se utiliza para las formas de Cotitulares y Beneficiarios
-        private bool gb_TreeCharged;  // Bandera que indica cuando ya se cargaron los datos del arbol de UnOrg
-        private long[] ga_Aperturas;     // Arreglo para guardar operaciones por validar en aperturas por excepcion
-        private string sHoraValida;
-        private int GnAgencia;  // Se utiliza para las formas de Cotitulares y Beneficiarios
-        private long GnProductoContratado;
-        private string sMsg;   // Variable para el manejo de mensajes
-        private string sMsg2;   // Variable para el manejo de mensajes
-        private string GsCuenta;
-        private int gAgencia;
-        private string GsNombreCliente;
-        private string GsPermisoAgencia;   // Variable utilizada para Permiso Agencias
-        private long GnOper;
-        private long siManc;     // Variable para saber si la cuenta es mancomunada
-        private long GnTipoCuenta;     // Variable para tipo de cuenta en Captura Ordenes de Pago
-        private bool bCapOrdPago;  // Variable que se utiliza para pedir password y login en Captura Ordenes de pago y CaptPassw.
-        private bool bComision;  // Variable que se utiliza para pedir password y login en Captura Ordenes de pago y CaptPassw
-        private string GsHoraCierreCHASE;   // Variable para el manejo de mensajes
-        private string GSHoraCierreBack;
-        private string GSHoraLimiteBack;
-        private string GsRepTDOver;
-        private bool bCambioSaldos;  // Variable para validacion de usuario (Cambio de Saldos)
-        private long GnProductoContratadoH;     // Variable para el producto Contratado de la cuenta eje harris
-        private string sCausa;   // Variable para manejar la OP
-        private string payTO;   // Variable para manejar la OP
-        private string sLocation;   // Variable para manejar la OP
-        private string sAba;   // Variable para manejar la OP
-        private string sFavorOf;   // Variable para manejar la OP
-        private string sFavorOfAccount;   // Variable para manejar la OP
-        private string sForFurther;   // Variable para manejar la OP
-        private string sReference;   // Variable para manejar la OP
-        private string sfechaCapturaOp;   // Variable para pasar fecha de captura a la pantalla de Genera OP
-        private string sfechaOperacionOp;   // Variable para pasar fecha de operacion a la pantalla de Genera OP
-        private decimal nMontoOP; // Variable para pasar el monto de OP a Genera OP
-        private long nRespuesta;
-        private OperacionOvernight[] gaOperacionOvernight;  // Arreglo para validar todas las operaciones de TD Overnight
-        private int gn_ProcessID;
-        private int gn_DBSwapNum;  // Numero de referencia a archivo Swap MDB
-        private string[] ga_DBSwapFiles;   // Arreglo de almacenamiento de archivos Swap
-        private int GnAccion;  // Variable que indica si se va a dar Mantenimiento o a Cancelar un Hold
-        private int gnErrorReporte;  // Variable para manejar los errores de los reportes
+        public string gs_sql;   // Variable para sentencias en SQL
+        public int gn_LineaTel;  // Numero de linea con la que firma el usuario
+        public string gs_FechaHoy;   // Variable que guarda la fecha del sistema en formato 'mm-dd-yy'
+        public int gn_NumUnidOrg;  // Variable para gardar el numero de unidad organizacional
+        public string gs_NumCuenta;   // Se utiliza para las formas de Cotitulares y Beneficiarios
+        public bool gb_TreeCharged;  // Bandera que indica cuando ya se cargaron los datos del arbol de UnOrg
+        public long[] ga_Aperturas;     // Arreglo para guardar operaciones por validar en aperturas por excepcion
+        public string sHoraValida;
+        public int GnAgencia;  // Se utiliza para las formas de Cotitulares y Beneficiarios
+        public long GnProductoContratado;
+        public string sMsg;   // Variable para el manejo de mensajes
+        public string sMsg2;   // Variable para el manejo de mensajes
+        public string GsCuenta;
+        public int gAgencia;
+        public string GsNombreCliente;
+        public string GsPermisoAgencia;   // Variable utilizada para Permiso Agencias
+        public long GnOper;
+        public long siManc;     // Variable para saber si la cuenta es mancomunada
+        public long GnTipoCuenta;     // Variable para tipo de cuenta en Captura Ordenes de Pago
+        public bool bCapOrdPago;  // Variable que se utiliza para pedir password y login en Captura Ordenes de pago y CaptPassw.
+        public bool bComision;  // Variable que se utiliza para pedir password y login en Captura Ordenes de pago y CaptPassw
+        public string GsHoraCierreCHASE;   // Variable para el manejo de mensajes
+        public string GSHoraCierreBack;
+        public string GSHoraLimiteBack;
+        public string GsRepTDOver;
+        public bool bCambioSaldos;  // Variable para validacion de usuario (Cambio de Saldos)
+        public long GnProductoContratadoH;     // Variable para el producto Contratado de la cuenta eje harris
+        public string sCausa;   // Variable para manejar la OP
+        public string payTO;   // Variable para manejar la OP
+        public string sLocation;   // Variable para manejar la OP
+        public string sAba;   // Variable para manejar la OP
+        public string sFavorOf;   // Variable para manejar la OP
+        public string sFavorOfAccount;   // Variable para manejar la OP
+        public string sForFurther;   // Variable para manejar la OP
+        public string sReference;   // Variable para manejar la OP
+        public string sfechaCapturaOp;   // Variable para pasar fecha de captura a la pantalla de Genera OP
+        public string sfechaOperacionOp;   // Variable para pasar fecha de operacion a la pantalla de Genera OP
+        public decimal nMontoOP; // Variable para pasar el monto de OP a Genera OP
+        public long nRespuesta;
+        public OperacionOvernight[] gaOperacionOvernight;  // Arreglo para validar todas las operaciones de TD Overnight
+        public int gn_ProcessID;
+        public int gn_DBSwapNum;  // Numero de referencia a archivo Swap MDB
+        public string[] ga_DBSwapFiles;   // Arreglo de almacenamiento de archivos Swap
+        public int GnAccion;  // Variable que indica si se va a dar Mantenimiento o a Cancelar un Hold
+        public int gnErrorReporte;  // Variable para manejar los errores de los reportes
 
     //    Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA" (ByVal lpBuffer As String, nSize As Long) As Long
     //    Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Long, ByVal lpBuffer As String) As Long
