@@ -80,11 +80,38 @@ namespace InterfazEquationFiduciario
         public int GnAccion;  // Variable que indica si se va a dar Mantenimiento o a Cancelar un Hold
         public int gnErrorReporte;  // Variable para manejar los errores de los reportes
 
-    //    Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA" (ByVal lpBuffer As String, nSize As Long) As Long
-    //    Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Long, ByVal lpBuffer As String) As Long
-    //    Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Long) As Long
-    //    Public Declare Function GetPrivateProfileString% Lib "kernel32" Alias "GetPrivateProfileStringA" (ByVal AppName$, ByVal KeyName$, ByVal keydefault$, ByVal ReturnString$, ByVal NumBytes As Integer, ByVal FileName$)
-    //    Public Declare Function WritePrivateProfileString% Lib "kernel32" Alias "WritePrivateProfileStringA" (ByVal AppName$, ByVal KeyName$, ByVal KeyValue$, ByVal FileName$)
+        public string lsCommandLine;
+        public string[] Parametros;
+        public string rutaArchivo;
+        public string nombreArchivo;
+        public string nombreArchivoDtt;
+        public string nombreArchivoDttDestino;
+        public string nombreArchivoFDF;
+        public string nombreArchivoFDFDestino;
+         
+        public string rutaPathModelos;
+        public string rutaPathDatos;
+        public string rutaPathTransfer;
+         
+         
+        public string EquipoAS;
+        public string LibreriaAS;
+        public string ArchivoAS;
+         
+        public string msPathFTPApp;
+
+        public string gsPswdDB;
+        public string gsUserDB;
+        public string gsNameDB;
+        public string gsCataDB;
+        public string gsDSNDB;
+        public string gsSrvr;
+
+        //    Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA" (ByVal lpBuffer As String, nSize As Long) As Long
+        //    Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Long, ByVal lpBuffer As String) As Long
+        //    Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Long) As Long
+        //    Public Declare Function GetPrivateProfileString% Lib "kernel32" Alias "GetPrivateProfileStringA" (ByVal AppName$, ByVal KeyName$, ByVal keydefault$, ByVal ReturnString$, ByVal NumBytes As Integer, ByVal FileName$)
+        //    Public Declare Function WritePrivateProfileString% Lib "kernel32" Alias "WritePrivateProfileStringA" (ByVal AppName$, ByVal KeyName$, ByVal KeyValue$, ByVal FileName$)
 
 
     }
