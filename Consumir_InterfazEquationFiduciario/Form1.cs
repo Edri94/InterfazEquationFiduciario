@@ -34,34 +34,36 @@ namespace Consumir_InterfazEquationFiduciario
 
             miscelaneas = new Miscelaneas();
             encriptacion = new Encriptacion();
+            Log.EscribeLog = true;
+
+            miscelaneas.paso1 = (Funciones.getValueAppConfig("1", "paso") == "1" ) ? true : false;
+            miscelaneas.paso2 = (Funciones.getValueAppConfig("2", "paso") == "1" ) ? true : false;
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             try
             {
+                
                 EstablecerParametros();
 
-                if (miscelaneas.rutaArchivo == "")
+                if (miscelaneas.paso1)
                 {
-                    Log.Escribe("No existe el valor de configuracion para generación de archivos", "Error");
-                }
+                    ValidarCarpeta(miscelaneas.rutaPathModelos);
+                    ValidarCarpeta(miscelaneas.rutaPathTransfer);
+                    ValidarCarpeta(miscelaneas.rutaPathDatos);
+
+                    miscelaneas.nombreArchivo = miscelaneas.rutaPathDatos + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy") + ".TXT";
+                    miscelaneas.nombreArchivoDtt = miscelaneas.rutaPathModelos + "EQFIDTKT.DTT";
+                    miscelaneas.nombreArchivoDttDestino = miscelaneas.rutaPathTransfer + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy") + ".DTT";
+                    miscelaneas.nombreArchivoFDF = miscelaneas.rutaPathModelos + "EQFIDTKTF.FDF";
+                    miscelaneas.nombreArchivoFDFDestino = miscelaneas.rutaPathTransfer + "EQFIDTKTF.FDF";
 
 
-                ValidarCarpeta(miscelaneas.rutaPathModelos);
-                ValidarCarpeta(miscelaneas.rutaPathTransfer);
-                ValidarCarpeta(miscelaneas.rutaPathDatos);
-
-                miscelaneas.nombreArchivo = miscelaneas.rutaPathDatos + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy") + ".TXT";
-                miscelaneas.nombreArchivoDtt = miscelaneas.rutaPathModelos + "EQFIDTKT.DTT";
-                miscelaneas.nombreArchivoDttDestino = miscelaneas.rutaPathTransfer + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy") + ".DTT";
-                miscelaneas.nombreArchivoFDF = miscelaneas.rutaPathModelos + "EQFIDTKTF.FDF";
-                miscelaneas.nombreArchivoFDFDestino = miscelaneas.rutaPathTransfer + "EQFIDTKTF.FDF";
-
-
-                if (ConectDB())
-                {
-                    miscelaneas.gs_sql = @"
+                    if (ConectDB())
+                    {
+                        miscelaneas.gs_sql = @"
                         select 
 	                        DISTINCT contrato=convert(varchar,ag.prefijo_agencia) + cf.CUENTA_CLIENTE,
 	                        GETDATE() [fecha],
@@ -83,46 +85,48 @@ namespace Consumir_InterfazEquationFiduciario
                         order by 1 desc;
                     ";
 
-                    string vData = "";
-                    SqlDataReader dr = bd.ejecutarConsulta(miscelaneas.gs_sql);
+                        string vData = "";
+                        SqlDataReader dr = bd.ejecutarConsulta(miscelaneas.gs_sql);
 
-                    using (StreamWriter outputFile = new StreamWriter(miscelaneas.nombreArchivo, append: true))
-                    {
-                        if (dr != null)
+                        using (StreamWriter outputFile = new StreamWriter(miscelaneas.nombreArchivo, append: true))
                         {
-                            while (dr.Read())
+                            if (dr != null)
                             {
-                                vData = dr.GetString(0) + "-" + dr.GetDateTime(1).ToString("ddMMyyyy") + dr.GetString(2);
-                                outputFile.WriteLine(vData);
+                                while (dr.Read())
+                                {
+                                    vData = dr.GetString(0) + "-" + dr.GetDateTime(1).ToString("ddMMyyyy") + dr.GetString(2);
+                                    outputFile.WriteLine(vData);
+                                }
+                                dr.Close();
                             }
-                            dr.Close();
+
                         }
-
                     }
-                }
 
-                if (!File.Exists(miscelaneas.nombreArchivoDttDestino))
+                    if (!File.Exists(miscelaneas.nombreArchivoDttDestino))
+                    {
+                        File.Copy(miscelaneas.nombreArchivoDtt, miscelaneas.nombreArchivoDttDestino);
+                    }
+                    if (!File.Exists(miscelaneas.nombreArchivoFDFDestino))
+                    {
+                        File.Copy(miscelaneas.nombreArchivoFDF, miscelaneas.nombreArchivoFDFDestino);
+                    }
+
+                    miscelaneas.EquipoAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Equipo", "AS400"));
+                    miscelaneas.LibreriaAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Libreria", "AS400"));
+                    miscelaneas.ArchivoAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Archivo", "AS400"));
+
+
+                    EscribirParametroDtt("HostName", miscelaneas.nombreArchivoDttDestino, miscelaneas.EquipoAS, "HostInfo");
+                    EscribirParametroDtt("HostFile", miscelaneas.nombreArchivoDttDestino, miscelaneas.LibreriaAS + "/" + miscelaneas.ArchivoAS, "HostInfo");
+                    EscribirParametroDtt("PCFile", miscelaneas.nombreArchivoDttDestino, miscelaneas.nombreArchivo, "ClientInfo");
+                    EscribirParametroDtt("FDFFile", miscelaneas.nombreArchivoDttDestino, miscelaneas.nombreArchivoFDFDestino, "ClientInfo");
+
+                }
+                if (miscelaneas.paso2)
                 {
-                    File.Copy(miscelaneas.nombreArchivoDtt, miscelaneas.nombreArchivoDttDestino);
+                    EjecutaTransfer(miscelaneas.msPathFTPApp, miscelaneas.nombreArchivoDttDestino);
                 }
-                if (!File.Exists(miscelaneas.nombreArchivoFDFDestino))
-                {
-                    File.Copy(miscelaneas.nombreArchivoFDF, miscelaneas.nombreArchivoFDFDestino);
-                }
-
-                miscelaneas.EquipoAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Equipo", "AS400"));
-                miscelaneas.LibreriaAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Libreria", "AS400"));
-                miscelaneas.ArchivoAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Archivo", "AS400"));
-
-
-                EscribirParametroDtt("HostName", miscelaneas.nombreArchivoDttDestino, miscelaneas.EquipoAS, "HostInfo");
-                EscribirParametroDtt("HostFile", miscelaneas.nombreArchivoDttDestino, miscelaneas.LibreriaAS + "/" + miscelaneas.ArchivoAS, "HostInfo");
-                EscribirParametroDtt("PCFile", miscelaneas.nombreArchivoDttDestino, miscelaneas.nombreArchivo, "ClientInfo");
-                EscribirParametroDtt("FDFFile", miscelaneas.nombreArchivoDttDestino, miscelaneas.nombreArchivoFDFDestino, "ClientInfo");
-
-
-                EjecutaTransfer(miscelaneas.msPathFTPApp, miscelaneas.nombreArchivoDttDestino);
-
             }
             catch (Exception ex)
             {
@@ -140,41 +144,28 @@ namespace Consumir_InterfazEquationFiduciario
                 {
                     miscelaneas.ApliPath = Funciones.Left(miscelaneas.ApliPath, miscelaneas.ApliPath.Length - 1);
                 }
+              
+                string section = "conexion";
 
-                if (miscelaneas.lsCommandLine != null)
-                {
-                    Erase(ref miscelaneas.Parametros);
-                    miscelaneas.Parametros = miscelaneas.lsCommandLine.Split('-');
+                string a = Funciones.getValueAppConfig("DBCata", section);
+                miscelaneas.gsCataDB = encriptacion.Decrypt(a);
+                miscelaneas.gsDSNDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBDSN", section));
+                miscelaneas.gsSrvr = encriptacion.Decrypt(Funciones.getValueAppConfig("DBSrvr", section));
+                miscelaneas.gsUserDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBUser", section));
+                miscelaneas.gsPswdDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBPswd", section));
+                miscelaneas.gsNameDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBName", section));
 
-                    miscelaneas.DEFAULT_SRVR = miscelaneas.Parametros[0].Trim();
-                    miscelaneas.GsUSer = miscelaneas.Parametros[1].Trim();
-                    miscelaneas.GsPassword = miscelaneas.Parametros[2].Trim();
-                    miscelaneas.DBDESARROLLO = miscelaneas.Parametros[3].Trim();
-                    miscelaneas.rutaArchivo = miscelaneas.Parametros[4].Trim();
-                }
-                else
-                {
-                    string section = "conexion";
+                miscelaneas.rutaArchivo = Funciones.getValueAppConfig("RutaArchivo", "Envfideicomiso");
 
-                    string a = Funciones.getValueAppConfig("DBCata", section);
-                    miscelaneas.gsCataDB = encriptacion.Decrypt(a);
-                    miscelaneas.gsDSNDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBDSN", section));
-                    miscelaneas.gsSrvr = encriptacion.Decrypt(Funciones.getValueAppConfig("DBSrvr", section));
-                    miscelaneas.gsUserDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBUser", section));
-                    miscelaneas.gsPswdDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBPswd", section));
-                    miscelaneas.gsNameDB = encriptacion.Decrypt(Funciones.getValueAppConfig("DBName", section));
+                miscelaneas.rutaPathModelos = Funciones.getValueAppConfig("PathModelos", "RUTAS");
+                miscelaneas.rutaPathTransfer = Funciones.getValueAppConfig("PathTransfer", "RUTAS");
+                miscelaneas.rutaPathDatos = Funciones.getValueAppConfig("PathDatos", "RUTAS");
 
-                    miscelaneas.rutaArchivo = Funciones.getValueAppConfig("RutaArchivo", "Envfideicomiso");
+                miscelaneas.GsUSerAS400 = Funciones.getValueAppConfig("Usuario", "AS400");
+                miscelaneas.GsPasswordAS400 = Funciones.getValueAppConfig("PSW", "AS400");
 
-                    miscelaneas.rutaPathModelos = Funciones.getValueAppConfig("PathModelos", "RUTAS");
-                    miscelaneas.rutaPathTransfer = Funciones.getValueAppConfig("PathTransfer", "RUTAS");
-                    miscelaneas.rutaPathDatos = Funciones.getValueAppConfig("PathDatos", "RUTAS");
-
-                    miscelaneas.GsUSerAS400 = Funciones.getValueAppConfig("Usuario", "AS400");
-                    miscelaneas.GsPasswordAS400 = Funciones.getValueAppConfig("PSW", "AS400");
-
-                    miscelaneas.msPathFTPApp = Funciones.getValueAppConfig("ClientAccess", "RUTAS");
-                }
+                miscelaneas.msPathFTPApp = Funciones.getValueAppConfig("ClientAccess", "RUTAS");
+                
             }
             catch (Exception ex)
             {
