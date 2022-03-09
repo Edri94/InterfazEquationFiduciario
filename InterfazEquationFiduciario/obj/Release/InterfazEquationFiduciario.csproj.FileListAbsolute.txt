@@ -3,3 +3,4 @@ C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\Interfaz
 C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\InterfazEquationFiduciario\obj\Release\InterfazEquationFiduciario.csproj.CoreCompileInputs.cache
 C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\InterfazEquationFiduciario\obj\Release\InterfazEquationFiduciario.dll
 C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\InterfazEquationFiduciario\obj\Release\InterfazEquationFiduciario.pdb
+C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\InterfazEquationFiduciario\obj\Release\InterfazEquationFiduciario.csproj.AssemblyReference.cache

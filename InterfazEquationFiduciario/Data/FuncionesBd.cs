@@ -132,5 +132,26 @@ namespace InterfazEquationFiduciario.Data
                 throw;
             }
         }
+
+        public SqlDataReader ejecutarConsultaParametros(string query)
+        {
+            try
+            {
+                cnnConexion.ActiveConnection = true;
+                cnnConexion.ParametersContains = true;
+                cnnConexion.CommandType = CommandType.Text;
+                cnnConexion.ActiveConnection = true;
+                //cnnConexion.AddParameters(new SqlParameter("@paran", "algo"));
+
+                SqlDataReader sqlRecord = cnnConexion.ExecuteDataReader(query);
+
+                return sqlRecord;
+            }
+            catch (Exception)
+            {
+                return null;
+                throw;
+            }
+        }
     }
 }

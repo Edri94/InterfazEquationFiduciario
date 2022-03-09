@@ -1,0 +1,4 @@
+[08-03-2022 12:09:24] *Error desde OnLoad:  No se pudo encontrar el archivo 'C:\temp\Interfaz_Fiduciario\Modelos\EQFIDTKT.FDF'. *InnerException:  *Source: mscorlib  *Data: System.Collections.ListDictionaryInternal  *HelpLink:   *StackTrace:    en System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   en System.IO.File.InternalCopy(String sourceFileName, String destFileName, Boolean overwrite, Boolean checkHost)
+   en System.IO.File.Copy(String sourceFileName, String destFileName)
+   en Consumir_InterfazEquationFiduciario.Form1.Form1_Load(Object sender, EventArgs e) en C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\Consumir_InterfazEquationFiduciario\Form1.cs:línea 112  *HResult: -2147024894  *TargetSite: Void WinIOError(Int32, System.String)  

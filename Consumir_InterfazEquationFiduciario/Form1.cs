@@ -54,39 +54,53 @@ namespace Consumir_InterfazEquationFiduciario
                     ValidarCarpeta(miscelaneas.rutaPathTransfer);
                     ValidarCarpeta(miscelaneas.rutaPathDatos);
 
-                    miscelaneas.nombreArchivo = miscelaneas.rutaPathDatos + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy") + ".TXT";
-                    miscelaneas.nombreArchivoDtt = miscelaneas.rutaPathModelos + "EQFIDTKT.DTT";
-                    miscelaneas.nombreArchivoDttDestino = miscelaneas.rutaPathTransfer + "EQFIDTKT" + DateTime.Now.ToString("ddMMyy") + ".DTT";
-                    miscelaneas.nombreArchivoFDF = miscelaneas.rutaPathModelos + "EQFIDTKTF.FDF";
-                    miscelaneas.nombreArchivoFDFDestino = miscelaneas.rutaPathTransfer + "EQFIDTKTF.FDF";
+                    miscelaneas.nombreArchivo = miscelaneas.rutaPathDatos + miscelaneas.ArchivoFDF + DateTime.Now.ToString("ddMMyy") + ".TXT";
+                    miscelaneas.nombreArchivoDtt = miscelaneas.rutaPathModelos + miscelaneas.ArchivoFDF + ".DTT";
+                    miscelaneas.nombreArchivoDttDestino = miscelaneas.rutaPathTransfer + miscelaneas.ArchivoFDF + DateTime.Now.ToString("ddMMyy") + ".DTT";
+                    miscelaneas.nombreArchivoFDF = miscelaneas.rutaPathModelos + miscelaneas.ArchivoFDF + ".FDF";
+                    miscelaneas.nombreArchivoFDFDestino = miscelaneas.rutaPathTransfer + miscelaneas.ArchivoFDF + ".FDF";
 
 
                     if (ConectDB())
                     {
                         miscelaneas.gs_sql = @"
-                        select 
-	                        DISTINCT contrato=convert(varchar,ag.prefijo_agencia) + cf.CUENTA_CLIENTE,
-	                        GETDATE() [fecha],
-	                        TIPO_OPERACION  
-                        from 
-	                        catalogos..CLIENTE_FIDEICOMISO cf with (nolock) 
-	                        join catalogos..cliente cl with (nolock) on cf.CUENTA_CLIENTE=cl.CUENTA_CLIENTE AND CF.AGENCIA=CL.AGENCIA  
-	                        join catalogos..AGENCIA ag with (nolock) on cf.agencia=ag.agencia 
-	                        join ticket..producto_contratado PC with (nolock) on pc.CUENTA_CLIENTE=cl.CUENTA_CLIENTE 
-	                        join ticket..STATUS_PRODUCTO sp with (nolock) on pc.status_producto=sp.status_producto 
-                        where 
-	                        ESTATUS in (1,4) 
-	                        and 
-	                        ( TIPO_OPERACION in ('A','M')) 
-	                        and 
-	                        pc.status_producto not in (8039) 
-	                        and 
-	                        pc.producto in (8009) 
-                        order by 1 desc;
-                    ";
+                            select 
+	                            DISTINCT contrato=convert(varchar,ag.prefijo_agencia) + cf.CUENTA_CLIENTE,
+	                            GETDATE() [fecha],
+	                            TIPO_OPERACION  
+                            from 
+	                            catalogos..CLIENTE_FIDEICOMISO cf with (nolock) 
+	                            join catalogos..cliente cl with (nolock) on cf.CUENTA_CLIENTE=cl.CUENTA_CLIENTE AND CF.AGENCIA=CL.AGENCIA  
+	                            join catalogos..AGENCIA ag with (nolock) on cf.agencia=ag.agencia 
+	                            join ticket..producto_contratado PC with (nolock) on pc.CUENTA_CLIENTE=cl.CUENTA_CLIENTE 
+	                            join ticket..STATUS_PRODUCTO sp with (nolock) on pc.status_producto=sp.status_producto 
+                            where 
+	                            ESTATUS in (@estatus1,@estatus2) 
+	                            and 
+	                            ( TIPO_OPERACION in (@operacion1,@operacion2)) 
+	                            and 
+	                            pc.status_producto not in (@status_producto) 
+	                            and 
+	                            pc.producto in (@producto) 
+                            order by 1 desc;
+                        ";
+
+
+                        SqlParameter[] parametros =
+                        {
+                            new SqlParameter("@producto",SqlDbType.Int, 11) { Value = 8009 },
+                            new SqlParameter("@status_producto",SqlDbType.Int, 11) { Value = 8039 },
+                            new SqlParameter("@estatus1",SqlDbType.Int, 11) { Value = 1 },
+                            new SqlParameter("@estatus2",SqlDbType.Int, 11) { Value = 4},
+                            new SqlParameter("@operacion1",SqlDbType.VarChar, 1) { Value = 'A'},
+                            new SqlParameter("@operacion2",SqlDbType.VarChar, 1) { Value = 'M' },
+                        };
+
+                        bd.cnnConexion.AddParameters(parametros);
+
 
                         string vData = "";
-                        SqlDataReader dr = bd.ejecutarConsulta(miscelaneas.gs_sql);
+                        SqlDataReader dr = bd.ejecutarConsultaParametros(miscelaneas.gs_sql);
 
                         using (StreamWriter outputFile = new StreamWriter(miscelaneas.nombreArchivo, append: true))
                         {
@@ -103,14 +117,10 @@ namespace Consumir_InterfazEquationFiduciario
                         }
                     }
 
-                    if (!File.Exists(miscelaneas.nombreArchivoDttDestino))
-                    {
-                        File.Copy(miscelaneas.nombreArchivoDtt, miscelaneas.nombreArchivoDttDestino);
-                    }
-                    if (!File.Exists(miscelaneas.nombreArchivoFDFDestino))
-                    {
-                        File.Copy(miscelaneas.nombreArchivoFDF, miscelaneas.nombreArchivoFDFDestino);
-                    }
+                    
+                    File.Copy(miscelaneas.nombreArchivoDtt, miscelaneas.nombreArchivoDttDestino, true);
+                    File.Copy(miscelaneas.nombreArchivoFDF, miscelaneas.nombreArchivoFDFDestino, true);
+                    
 
                     miscelaneas.EquipoAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Equipo", "AS400"));
                     miscelaneas.LibreriaAS = encriptacion.Decrypt(Funciones.getValueAppConfig("Libreria", "AS400"));
@@ -165,7 +175,9 @@ namespace Consumir_InterfazEquationFiduciario
                 miscelaneas.GsPasswordAS400 = Funciones.getValueAppConfig("PSW", "AS400");
 
                 miscelaneas.msPathFTPApp = Funciones.getValueAppConfig("ClientAccess", "RUTAS");
-                
+
+                miscelaneas.ArchivoFDF = Funciones.getValueAppConfig("ArchivoFDF", "RUTAS"); 
+
             }
             catch (Exception ex)
             {
@@ -205,7 +217,9 @@ namespace Consumir_InterfazEquationFiduciario
             {
                 Process p = new Process();
                 p.EnableRaisingEvents = false;
+                
                 p.StartInfo.FileName = $"{path}cwbtf.exe";
+                Log.Escribe($"Ejecutando: {path}cwbtf.exe");
                 p.StartInfo.Arguments = nombreArchivoDttDestino;
                 p.StartInfo.CreateNoWindow = false;
                 p.Start();

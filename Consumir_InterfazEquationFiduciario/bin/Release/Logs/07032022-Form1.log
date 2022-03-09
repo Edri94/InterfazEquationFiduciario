@@ -1,4 +1,0 @@
-[07-03-2022 05:47:44]  Error desde Form1_Load:  Error al abrir el ejecutable 
-[07-03-2022 05:47:44] *Error desde Form1_Load:  El sistema no puede encontrar el archivo especificado *InnerException:  *Source: System  *Data: System.Collections.ListDictionaryInternal  *HelpLink:   *StackTrace:    en System.Diagnostics.Process.StartWithShellExecuteEx(ProcessStartInfo startInfo)
-   en System.Diagnostics.Process.Start()
-   en Consumir_InterfazEquationFiduciario.Form1.EjecutaTransfer(String path, String nombreArchivoDttDestino) en C:\Users\MI05332\Documents\practicas\c sharp\InterfazEquationFiduciario\Consumir_InterfazEquationFiduciario\Form1.cs:línea 212  *HResult: -2147467259  *TargetSite: Boolean StartWithShellExecuteEx(System.Diagnostics.ProcessStartInfo)  

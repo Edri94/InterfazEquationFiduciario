@@ -86,7 +86,7 @@ namespace InterfazEquationFiduciario
         public string nombreArchivo;
         public string nombreArchivoDtt;
         public string nombreArchivoDttDestino;
-        public string nombreArchivoFDF;
+        public string nombreArchivoFDF, ArchivoFDF;
         public string nombreArchivoFDFDestino;
          
         public string rutaPathModelos;
